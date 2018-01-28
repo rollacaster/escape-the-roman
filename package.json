@@ -1,0 +1,12 @@
+{
+  "name": "escape-the-roman",
+  "version": "0.1.0",
+  "description": "Escape from the intrusive rose sellers.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["game"],
+  "author": "Thomas Sojka",
+  "license": "MIT"
+}
