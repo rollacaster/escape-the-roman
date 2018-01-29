@@ -1,0 +1,34 @@
+* Release Planning
+** v0.1.0
+*** Controllable player (simple square)
+*** Random walk romans (simple square)
+*** Detect collisions with roman
+** v0.2.0
+*** Romans have sight cones (which results in a collision)
+*** No player can leave the playground
+*** Player needs to reach an exit goal
+** v0.3.0
+*** Romans and player should stop being squares
+*** Background images
+*** Levels
+** v0.4.0
+*** Start screen
+*** Icon
+*** Lives
+** v0.5.0
+*** Points
+*** rankings
+** v1.0.0
+*** Release
+** v1.1.0
+*** Rose selling minigame
+* Technical
+** Framework evaluation (develop v0.1 in:)
+*** Phaser
+*** react-game-kit
+** Things needed
+*** Physics engine
+*** Asset management
+*** Music
+*** Controls (Keyboard/Touch)
+*** Should work on mobile
