@@ -8,13 +8,37 @@ let keyW
 let keyA
 let keyS
 let keyD
-let rect
 let graphics
+let player
+let rosesellers = [null, null, null, null, null]
 
 function create() {
-  rect = new Phaser.Geom.Rectangle(32, 32, 64, 64)
-  graphics = this.add.graphics({ fillStyle: { color: 0xffffff } })
-  graphics.fillRectShape(rect)
+  rosesellers = rosesellers.map(
+    _ =>
+      new Phaser.Geom.Rectangle(
+        Math.random() * 600,
+        Math.random() * 600,
+        64,
+        64
+      )
+  )
+  rosesellers.forEach((rect, i) => {
+    graphics = this.add.graphics({
+      fillStyle: { color: 0x666666 }
+    })
+    graphics.fillRectShape(rect)
+  })
+  player = new Phaser.Geom.Rectangle(
+    Math.random() * 600,
+    Math.random() * 600,
+    64,
+    64
+  )
+  graphics = this.add.graphics({
+    fillStyle: { color: 0xffffff }
+  })
+  graphics.fillRectShape(player)
+
   keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
   keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
   keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
@@ -23,24 +47,24 @@ function create() {
 
 function update() {
   if (keyW.isDown) {
-    rect.y -= speed
+    player.y -= speed
     graphics.clear()
-    graphics.fillRectShape(rect)
+    graphics.fillRectShape(player)
   }
   if (keyA.isDown) {
-    rect.x -= speed
+    player.x -= speed
     graphics.clear()
-    graphics.fillRectShape(rect)
+    graphics.fillRectShape(player)
   }
   if (keyS.isDown) {
-    rect.y += speed
+    player.y += speed
     graphics.clear()
-    graphics.fillRectShape(rect)
+    graphics.fillRectShape(player)
   }
   if (keyD.isDown) {
-    rect.x += speed
+    player.x += speed
     graphics.clear()
-    graphics.fillRectShape(rect)
+    graphics.fillRectShape(player)
   }
 }
 
