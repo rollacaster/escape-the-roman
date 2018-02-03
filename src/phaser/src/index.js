@@ -8,8 +8,9 @@ let keyW
 let keyA
 let keyS
 let keyD
-let graphics
+let graphics = [null, null, null, null, null]
 let player
+let playerGraphics
 let rosesellers = [null, null, null, null, null]
 
 function create() {
@@ -23,10 +24,10 @@ function create() {
       )
   )
   rosesellers.forEach((rect, i) => {
-    graphics = this.add.graphics({
+    graphics[i] = this.add.graphics({
       fillStyle: { color: 0x666666 }
     })
-    graphics.fillRectShape(rect)
+    graphics[i].fillRectShape(rect)
   })
   player = new Phaser.Geom.Rectangle(
     Math.random() * 600,
@@ -34,10 +35,10 @@ function create() {
     64,
     64
   )
-  graphics = this.add.graphics({
+  playerGraphics = this.add.graphics({
     fillStyle: { color: 0xffffff }
   })
-  graphics.fillRectShape(player)
+  playerGraphics.fillRectShape(player)
 
   keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
   keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
@@ -45,26 +46,71 @@ function create() {
   keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
 }
 
+function moveRoseSeller(rosesellerIndex, direction, speed = 1) {
+  switch (direction) {
+    case 'up':
+      rosesellers[rosesellerIndex].y += speed
+      break
+    case 'down':
+      rosesellers[rosesellerIndex].y -= speed
+      break
+    case 'left':
+      rosesellers[rosesellerIndex].x -= speed
+      break
+    case 'right':
+      rosesellers[rosesellerIndex].x += speed
+      break
+    default:
+      console.error('Wrong direction provided!')
+  }
+  graphics[rosesellerIndex].clear()
+  graphics[rosesellerIndex].fillRectShape(rosesellers[rosesellerIndex])
+}
+
+const randomDirection = () => {
+  const rand = Math.random() * 100
+  if (rand <= 25) {
+    return 'up'
+  } else if (rand <= 50) {
+    return 'down'
+  } else if (rand <= 75) {
+    return 'left'
+  } else {
+    return 'right'
+  }
+}
+
+const randomSpeed = () => Math.random() * 10
+
 function update() {
+  rosesellers.forEach((_, i) =>
+    moveRoseSeller(i, randomDirection(), randomSpeed())
+  )
+
   if (keyW.isDown) {
+    console.log(player)
+    playerGraphics.clear()
     player.y -= speed
-    graphics.clear()
-    graphics.fillRectShape(player)
+
+    playerGraphics.fillRectShape(player)
   }
   if (keyA.isDown) {
+    playerGraphics.clear()
     player.x -= speed
-    graphics.clear()
-    graphics.fillRectShape(player)
+
+    playerGraphics.fillRectShape(player)
   }
   if (keyS.isDown) {
+    playerGraphics.clear()
     player.y += speed
-    graphics.clear()
-    graphics.fillRectShape(player)
+
+    playerGraphics.fillRectShape(player)
   }
   if (keyD.isDown) {
+    playerGraphics.clear()
     player.x += speed
-    graphics.clear()
-    graphics.fillRectShape(player)
+
+    playerGraphics.fillRectShape(player)
   }
 }
 
