@@ -12,15 +12,18 @@ let graphics = [null, null, null, null, null]
 let player
 let playerGraphics
 let rosesellers = [null, null, null, null, null]
+let playerSize = 64
+let text
 
 function create() {
+  text = this.add.text(100, 100, 'You loose')
   rosesellers = rosesellers.map(
     _ =>
       new Phaser.Geom.Rectangle(
         Math.random() * 600,
         Math.random() * 600,
-        64,
-        64
+        playerSize,
+        playerSize
       )
   )
   rosesellers.forEach((rect, i) => {
@@ -32,8 +35,8 @@ function create() {
   player = new Phaser.Geom.Rectangle(
     Math.random() * 600,
     Math.random() * 600,
-    64,
-    64
+    playerSize,
+    playerSize
   )
   playerGraphics = this.add.graphics({
     fillStyle: { color: 0xffffff }
@@ -82,13 +85,39 @@ const randomDirection = () => {
 
 const randomSpeed = () => Math.random() * 10
 
+const isLost = (player, rosesellers) =>
+  rosesellers.some(
+    seller =>
+      (player.x > seller.x &&
+        player.x < seller.x + playerSize &&
+        player.y > seller.y &&
+        player.y < seller.y + playerSize) ||
+      (player.x + playerSize > seller.x &&
+        player.x + playerSize < seller.x + playerSize &&
+        player.y + playerSize > seller.y &&
+        player.y + playerSize < seller.y + playerSize) ||
+      (player.x > seller.x &&
+        player.x < seller.x + playerSize &&
+        player.y + playerSize > seller.y &&
+        player.y + playerSize < seller.y + playerSize) ||
+      (player.x + playerSize > seller.x &&
+        player.x + playerSize < seller.x + playerSize &&
+        player.y > seller.y &&
+        player.y < seller.y + playerSize)
+  )
+
 function update() {
   rosesellers.forEach((_, i) =>
     moveRoseSeller(i, randomDirection(), randomSpeed())
   )
 
+  if (isLost(player, rosesellers)) {
+    text.setText('You loose')
+  } else {
+    text.setText('')
+  }
+
   if (keyW.isDown) {
-    console.log(player)
     playerGraphics.clear()
     player.y -= speed
 
