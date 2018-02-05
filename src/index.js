@@ -14,6 +14,8 @@ let playerGraphics
 let rosesellers = [null, null, null, null, null]
 let playerSize = 64
 let text
+let goalZone
+let goalZoneGraphics
 
 function create() {
   text = this.add.text(100, 100, 'You loose')
@@ -42,6 +44,16 @@ function create() {
     fillStyle: { color: 0xffffff }
   })
   playerGraphics.fillRectShape(player)
+  goalZone = new Phaser.Geom.Rectangle(
+    Math.random() * 900,
+    Math.random() * 700,
+    playerSize,
+    playerSize
+  )
+  goalZoneGraphics = this.add.graphics({
+    fillStyle: { color: 0x00ff00 }
+  })
+  goalZoneGraphics.fillRectShape(goalZone)
 
   keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
   keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
@@ -85,36 +97,37 @@ const randomDirection = () => {
 
 const randomSpeed = () => Math.random() * 10
 
-const isLost = (player, rosesellers) =>
-  rosesellers.some(
-    seller =>
-      (player.x > seller.x &&
-        player.x < seller.x + playerSize &&
-        player.y > seller.y &&
-        player.y < seller.y + playerSize) ||
-      (player.x + playerSize > seller.x &&
-        player.x + playerSize < seller.x + playerSize &&
-        player.y + playerSize > seller.y &&
-        player.y + playerSize < seller.y + playerSize) ||
-      (player.x > seller.x &&
-        player.x < seller.x + playerSize &&
-        player.y + playerSize > seller.y &&
-        player.y + playerSize < seller.y + playerSize) ||
-      (player.x + playerSize > seller.x &&
-        player.x + playerSize < seller.x + playerSize &&
-        player.y > seller.y &&
-        player.y < seller.y + playerSize)
-  )
+const isCollision = (react1, rect2) =>
+  (react1.x > rect2.x &&
+    react1.x < rect2.x + playerSize &&
+    react1.y > rect2.y &&
+    react1.y < rect2.y + playerSize) ||
+  (react1.x + playerSize > rect2.x &&
+    react1.x + playerSize < rect2.x + playerSize &&
+    react1.y + playerSize > rect2.y &&
+    react1.y + playerSize < rect2.y + playerSize) ||
+  (react1.x > rect2.x &&
+    react1.x < rect2.x + playerSize &&
+    react1.y + playerSize > rect2.y &&
+    react1.y + playerSize < rect2.y + playerSize) ||
+  (react1.x + playerSize > rect2.x &&
+    react1.x + playerSize < rect2.x + playerSize &&
+    react1.y > rect2.y &&
+    react1.y < rect2.y + playerSize)
 
 function update() {
   rosesellers.forEach((_, i) =>
     moveRect(rosesellers[i], graphics[i], randomDirection(), randomSpeed())
   )
 
-  if (isLost(player, rosesellers)) {
+  if (rosesellers.some(seller => isCollision(player, seller))) {
     text.setText('You loose')
   } else {
     text.setText('')
+  }
+
+  if (isCollision(player, goalZone)) {
+    text.setText('You win')
   }
 
   if (keyW.isDown) {
