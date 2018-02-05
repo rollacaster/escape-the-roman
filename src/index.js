@@ -8,52 +8,48 @@ let keyW
 let keyA
 let keyS
 let keyD
-let graphics = [null, null, null, null, null]
-let player
-let playerGraphics
-let rosesellers = [null, null, null, null, null]
+let player = {}
+let rosesellers = [{}, {}, {}, {}, {}]
 let playerSize = 64
 let text
-let goalZone
-let goalZoneGraphics
+let goalZone = {}
 
 function create() {
   text = this.add.text(100, 100, 'You loose')
-  rosesellers = rosesellers.map(
-    _ =>
-      new Phaser.Geom.Rectangle(
-        Math.random() * 900,
-        Math.random() * 700,
-        playerSize,
-        playerSize
-      )
-  )
-  rosesellers.forEach((rect, i) => {
-    graphics[i] = this.add.graphics({
+  rosesellers = rosesellers.map(_ => ({
+    rect: new Phaser.Geom.Rectangle(
+      Math.random() * 900,
+      Math.random() * 700,
+      playerSize,
+      playerSize
+    )
+  }))
+  rosesellers.forEach((roseseller, i) => {
+    roseseller.graphics = this.add.graphics({
       fillStyle: { color: 0x666666 }
     })
-    graphics[i].fillRectShape(rect)
+    roseseller.graphics.fillRectShape(roseseller.rect)
   })
-  player = new Phaser.Geom.Rectangle(
+  player.rect = new Phaser.Geom.Rectangle(
     Math.random() * 900,
     Math.random() * 700,
     playerSize,
     playerSize
   )
-  playerGraphics = this.add.graphics({
+  player.graphics = this.add.graphics({
     fillStyle: { color: 0xffffff }
   })
-  playerGraphics.fillRectShape(player)
-  goalZone = new Phaser.Geom.Rectangle(
+  player.graphics.fillRectShape(player.rect)
+  goalZone.rect = new Phaser.Geom.Rectangle(
     Math.random() * 900,
     Math.random() * 700,
     playerSize,
     playerSize
   )
-  goalZoneGraphics = this.add.graphics({
+  goalZone.graphics = this.add.graphics({
     fillStyle: { color: 0x00ff00 }
   })
-  goalZoneGraphics.fillRectShape(goalZone)
+  goalZone.graphics.fillRectShape(goalZone.rect)
 
   keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
   keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
@@ -116,31 +112,31 @@ const isCollision = (react1, rect2) =>
     react1.y < rect2.y + playerSize)
 
 function update() {
-  rosesellers.forEach((_, i) =>
-    moveRect(rosesellers[i], graphics[i], randomDirection(), randomSpeed())
+  rosesellers.forEach(seller =>
+    moveRect(seller.rect, seller.graphics, randomDirection(), randomSpeed())
   )
 
-  if (rosesellers.some(seller => isCollision(player, seller))) {
+  if (rosesellers.some(seller => isCollision(player.rect, seller.rect))) {
     text.setText('You loose')
   } else {
     text.setText('')
   }
 
-  if (isCollision(player, goalZone)) {
+  if (isCollision(player.rect, goalZone.rect)) {
     text.setText('You win')
   }
 
   if (keyW.isDown) {
-    moveRect(player, playerGraphics, 'up', speed)
+    moveRect(player.rect, player.graphics, 'up', speed)
   }
   if (keyA.isDown) {
-    moveRect(player, playerGraphics, 'left', speed)
+    moveRect(player.rect, player.graphics, 'left', speed)
   }
   if (keyS.isDown) {
-    moveRect(player, playerGraphics, 'down', speed)
+    moveRect(player.rect, player.graphics, 'down', speed)
   }
   if (keyD.isDown) {
-    moveRect(player, playerGraphics, 'right', speed)
+    moveRect(player.rect, player.graphics, 'right', speed)
   }
 }
 
