@@ -4,7 +4,7 @@
   "description": "Escape from the intrusive rose sellers.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server"
   },
   "keywords": [
     "game"
@@ -22,6 +22,12 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-react": "^7.6.0",
     "eslint-plugin-standard": "^3.0.1",
-    "standard": "^10.0.3"
+    "raw-loader": "^0.5.1",
+    "standard": "^10.0.3",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
+  },
+  "dependencies": {
+    "phaser": "^3.0.0-beta.20"
   }
 }
