@@ -20,8 +20,8 @@ function create() {
   rosesellers = rosesellers.map(
     _ =>
       new Phaser.Geom.Rectangle(
-        Math.random() * 600,
-        Math.random() * 600,
+        Math.random() * 900,
+        Math.random() * 700,
         playerSize,
         playerSize
       )
@@ -33,8 +33,8 @@ function create() {
     graphics[i].fillRectShape(rect)
   })
   player = new Phaser.Geom.Rectangle(
-    Math.random() * 600,
-    Math.random() * 600,
+    Math.random() * 900,
+    Math.random() * 700,
     playerSize,
     playerSize
   )
@@ -49,25 +49,25 @@ function create() {
   keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
 }
 
-function moveRoseSeller(rosesellerIndex, direction, speed = 1) {
+function moveRect(rect, graphics, direction, speed = 1) {
   switch (direction) {
     case 'up':
-      rosesellers[rosesellerIndex].y += speed
+      rect.y = Math.max(rect.y - speed, 0)
       break
     case 'down':
-      rosesellers[rosesellerIndex].y -= speed
+      rect.y = Math.min(rect.y + speed, 768 - playerSize)
       break
     case 'left':
-      rosesellers[rosesellerIndex].x -= speed
+      rect.x = Math.max(rect.x - speed, 0)
       break
     case 'right':
-      rosesellers[rosesellerIndex].x += speed
+      rect.x = Math.min(rect.x + speed, 1024 - playerSize)
       break
     default:
       console.error('Wrong direction provided!')
   }
-  graphics[rosesellerIndex].clear()
-  graphics[rosesellerIndex].fillRectShape(rosesellers[rosesellerIndex])
+  graphics.clear()
+  graphics.fillRectShape(rect)
 }
 
 const randomDirection = () => {
@@ -108,7 +108,7 @@ const isLost = (player, rosesellers) =>
 
 function update() {
   rosesellers.forEach((_, i) =>
-    moveRoseSeller(i, randomDirection(), randomSpeed())
+    moveRect(rosesellers[i], graphics[i], randomDirection(), randomSpeed())
   )
 
   if (isLost(player, rosesellers)) {
@@ -118,28 +118,16 @@ function update() {
   }
 
   if (keyW.isDown) {
-    playerGraphics.clear()
-    player.y -= speed
-
-    playerGraphics.fillRectShape(player)
+    moveRect(player, playerGraphics, 'up', speed)
   }
   if (keyA.isDown) {
-    playerGraphics.clear()
-    player.x -= speed
-
-    playerGraphics.fillRectShape(player)
+    moveRect(player, playerGraphics, 'left', speed)
   }
   if (keyS.isDown) {
-    playerGraphics.clear()
-    player.y += speed
-
-    playerGraphics.fillRectShape(player)
+    moveRect(player, playerGraphics, 'down', speed)
   }
   if (keyD.isDown) {
-    playerGraphics.clear()
-    player.x += speed
-
-    playerGraphics.fillRectShape(player)
+    moveRect(player, playerGraphics, 'right', speed)
   }
 }
 
