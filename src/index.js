@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 
-var config = { scene: { create, update } }
+var config = { scene: { preload, create, update } }
+const game = new Phaser.Game(config)
 
 const speed = 5
 
@@ -9,55 +10,48 @@ let keyA
 let keyS
 let keyD
 let player = {}
-let rosesellers = [{}, {}, {}, {}, {}]
+let rosesellers = []
+let rosesellerAmount = 5
 let playerSize = 64
 let text
 let goalZone = {}
 
+function preload() {
+  this.load.setBaseURL('http://labs.phaser.io')
+
+  this.load.image('roseseller', 'assets/sprites/50x50.png')
+  this.load.image('player', 'assets/sprites/50x50-white.png')
+  this.load.image('goal', '"assets/sprites/50x50-black.png')
+}
+
 function create() {
   text = this.add.text(100, 100, 'You loose')
-  rosesellers = rosesellers.map(_ => ({
-    rect: new Phaser.Geom.Rectangle(
+  for (let i = 0; i < rosesellerAmount; i++) {
+    rosesellers[i] = this.add.image(
       Math.random() * 900,
       Math.random() * 700,
-      playerSize,
-      playerSize
+      'roseseller'
     )
-  }))
-  rosesellers.forEach((roseseller, i) => {
-    roseseller.graphics = this.add.graphics({
-      fillStyle: { color: 0x666666 }
-    })
-    roseseller.graphics.fillRectShape(roseseller.rect)
-  })
-  player.rect = new Phaser.Geom.Rectangle(
-    Math.random() * 900,
-    Math.random() * 700,
-    playerSize,
-    playerSize
-  )
-  player.graphics = this.add.graphics({
-    fillStyle: { color: 0xffffff }
-  })
-  player.graphics.fillRectShape(player.rect)
-  goalZone.rect = new Phaser.Geom.Rectangle(
-    Math.random() * 900,
-    Math.random() * 700,
-    playerSize,
-    playerSize
-  )
-  goalZone.graphics = this.add.graphics({
-    fillStyle: { color: 0x00ff00 }
-  })
-  goalZone.graphics.fillRectShape(goalZone.rect)
+  }
+  player = this.add.image(Math.random() * 900, Math.random() * 700, 'player')
+  goalZone = this.add.image(Math.random() * 900, Math.random() * 700, 'goal')
 
   keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
   keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
   keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
   keyD = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+
+  var points = [50, 400, 200, 200, 350, 300, 500, 500, 700, 400]
+
+  var curve = new Phaser.Curves.Spline(points)
+  var graphics = this.add.graphics()
+  graphics.lineStyle(1, 0xffffff, 1)
+  curve.draw(graphics)
+  var path1 = this.add.follower(curve, 50, 400, {})
+  path1.start(4000)
 }
 
-function moveRect(rect, graphics, direction, speed = 1) {
+function moveRect(rect, direction, speed = 1) {
   switch (direction) {
     case 'up':
       rect.y = Math.max(rect.y - speed, 0)
@@ -74,8 +68,6 @@ function moveRect(rect, graphics, direction, speed = 1) {
     default:
       console.error('Wrong direction provided!')
   }
-  graphics.clear()
-  graphics.fillRectShape(rect)
 }
 
 const randomDirection = () => {
@@ -113,31 +105,29 @@ const isCollision = (react1, rect2) =>
 
 function update() {
   rosesellers.forEach(seller =>
-    moveRect(seller.rect, seller.graphics, randomDirection(), randomSpeed())
+    moveRect(seller, randomDirection(), randomSpeed())
   )
 
-  if (rosesellers.some(seller => isCollision(player.rect, seller.rect))) {
+  if (rosesellers.some(seller => isCollision(player, seller))) {
     text.setText('You loose')
   } else {
     text.setText('')
   }
 
-  if (isCollision(player.rect, goalZone.rect)) {
+  if (isCollision(player, goalZone)) {
     text.setText('You win')
   }
 
   if (keyW.isDown) {
-    moveRect(player.rect, player.graphics, 'up', speed)
+    player.y -= speed
   }
   if (keyA.isDown) {
-    moveRect(player.rect, player.graphics, 'left', speed)
+    player.x -= speed
   }
   if (keyS.isDown) {
-    moveRect(player.rect, player.graphics, 'down', speed)
+    player.y += speed
   }
   if (keyD.isDown) {
-    moveRect(player.rect, player.graphics, 'right', speed)
+    player.x += speed
   }
 }
-
-new Phaser.Game(config)
