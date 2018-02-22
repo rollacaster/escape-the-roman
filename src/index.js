@@ -47,10 +47,6 @@ function create() {
       startY,
       'roseseller'
     )
-    rosesellers[i].start({
-      duration: 500 + Math.random() * 2000,
-      yoyo: true
-    })
   }
   goalZone = this.add.image(Math.random() * 900, Math.random() * 700, 'goal')
   player = this.physics.add
@@ -87,6 +83,15 @@ function update() {
   } else {
     text.setText('')
   }
+
+  rosesellers.forEach(roseSeller => {
+    if (!roseSeller.isFollowing()) {
+      roseSeller.start({
+        duration: 500 + Math.random() * 2000,
+        yoyo: true
+      })
+    }
+  })
 
   if (isCollision(player, goalZone)) {
     text.setText('You win')
