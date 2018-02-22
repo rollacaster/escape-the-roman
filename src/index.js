@@ -1,6 +1,11 @@
 import Phaser from 'phaser'
 
-var config = { scene: { preload, create, update } }
+var config = {
+  scene: { preload, create, update },
+  physics: {
+    default: 'arcade'
+  }
+}
 new Phaser.Game(config)
 
 const speed = 5
@@ -25,6 +30,8 @@ function preload() {
 }
 
 function create() {
+  this.physics.world.setBoundsCollision()
+
   text = this.add.text(100, 100, 'You loose')
   for (let i = 0; i < rosesellerAmount; i++) {
     const startX = Math.random() * 900
@@ -40,10 +47,15 @@ function create() {
       startY,
       'roseseller'
     )
-    rosesellers[i].start({ duration: 4000, yoyo: true, rotateToPath: true })
+    rosesellers[i].start({
+      duration: 500 + Math.random() * 2000,
+      yoyo: true
+    })
   }
   goalZone = this.add.image(Math.random() * 900, Math.random() * 700, 'goal')
-  player = this.add.image(Math.random() * 900, Math.random() * 700, 'player')
+  player = this.physics.add
+    .image(Math.random() * 900, Math.random() * 700, 'player')
+    .setCollideWorldBounds(true)
 
   keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
   keyA = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
