@@ -34,7 +34,7 @@ function create() {
 
   text = this.add.text(100, 100, 'You loose')
   for (let i = 0; i < rosesellerAmount; i++) {
-    const startX = Math.random() * 900
+    const startX = 100 + Math.random() * 900
     const startY = Math.random() * 700
     rosesellers[i] = this.add.follower(
       new Phaser.Curves.Spline([
@@ -48,9 +48,9 @@ function create() {
       'roseseller'
     )
   }
-  goalZone = this.add.image(Math.random() * 900, Math.random() * 700, 'goal')
+  goalZone = this.add.image(1000, Math.random() * 700, 'goal')
   player = this.physics.add
-    .image(Math.random() * 900, Math.random() * 700, 'player')
+    .image(0, Math.random() * 700, 'player')
     .setCollideWorldBounds(true)
 
   keyW = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
